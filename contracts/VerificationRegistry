@@ -1,0 +1,83 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract VerificationRegistry {
+    address public owner;
+    mapping(address => bool) public isVerified;
+    mapping(address => bool) public isNGO;
+
+    event RefugeeVerified(address indexed refugee, address indexed ngo);
+    event NGOAuthorized(address indexed ngo);
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
+
+    modifier onlyNGO() {
+        require(isNGO[msg.sender], "Only authorized NGOs can call this function");
+        _;
+    }
+
+    function authorizeNGO(address _ngo) public onlyOwner {
+        require(_ngo != address(0), "NGO address cannot be zero");
+        isNGO[_ngo] = true;
+        emit NGOAuthorized(_ngo);
+    }
+
+    function verifyRefugee(address _refugee) public onlyNGO {
+        require(_refugee != address(0), "Refugee address cannot be zero");
+        require(!isVerified[_refugee], "Refugee already verified");
+        isVerified[_refugee] = true;
+        emit RefugeeVerified(_refugee, msg.sender);
+    }
+
+    function getVerificationStatus(address _refugee) public view returns (bool) {
+        return isVerified[_refugee];
+    }
+} // SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract VerificationRegistry {
+    address public owner;
+    mapping(address => bool) public isVerified;
+    mapping(address => bool) public isNGO;
+
+    event RefugeeVerified(address indexed refugee, address indexed ngo);
+    event NGOAuthorized(address indexed ngo);
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only owner can call this function");
+        _;
+    }
+
+    modifier onlyNGO() {
+        require(isNGO[msg.sender], "Only authorized NGOs can call this function");
+        _;
+    }
+
+    function authorizeNGO(address _ngo) public onlyOwner {
+        require(_ngo != address(0), "NGO address cannot be zero");
+        isNGO[_ngo] = true;
+        emit NGOAuthorized(_ngo);
+    }
+
+    function verifyRefugee(address _refugee) public onlyNGO {
+        require(_refugee != address(0), "Refugee address cannot be zero");
+        require(!isVerified[_refugee], "Refugee already verified");
+        isVerified[_refugee] = true;
+        emit RefugeeVerified(_refugee, msg.sender);
+    }
+
+    function getVerificationStatus(address _refugee) public view returns (bool) {
+        return isVerified[_refugee];
+    }
+}
